@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunflower Head Sprouting</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: white;
+            overflow: hidden;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .sunflower {
+            position: relative;
+        }
+
+        .sunflower.animate {
+            animation: bloom 3s ease forwards;
+        }
+
+        @keyframes bloom {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+
+        /* Center */
+        .center {
+            width: 120px;
+            height: 120px;
+            background: #654321;
+            border-radius: 50%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .center::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle, #543210 3px, transparent 3px);
+            background-size: 15px 15px;
+            background-position: 4px 4px;
+            border-radius: 50%;
+        }
+
+        /* Petals container */
+        .petals {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .petal {
+            position: absolute;
+            width: 50px;
+            height: 75px;
+            background: #FFFF00;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            opacity: 0;
+        }
+
+        .petal.show {
+            animation: petal-grow 0.5s ease forwards;
+        }
+
+        @keyframes petal-grow {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Button */
+        .reset-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #FFFF00;
+            border: 3px solid #654321;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .reset-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="sunflower" id="sunflower">
+        <div class="petals" id="petals"></div>
+        <div class="center"></div>
+    </div>
+
+    <button class="reset-btn" id="resetBtn">isa pa nga</button>
+
+    <script>
+        const petalsContainer = document.getElementById('petals');
+        const sunflower = document.getElementById('sunflower');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        function createSunflower() {
+            // Clear existing petals
+            petalsContainer.innerHTML = '';
+            
+            // Remove animation class
+            sunflower.classList.remove('animate');
+            
+            // Force reflow
+            void sunflower.offsetWidth;
+            
+            // Add animation class
+            sunflower.classList.add('animate');
+            
+            // Create 13 petals around the center
+            for (let i = 0; i < 13; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                const angle = (i * (360 / 13)) - 90;
+                
+                // Set the rotation and position directly in the style
+                petal.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-110px)`;
+                
+                petalsContainer.appendChild(petal);
+                
+                // Add the animation class after a delay
+                setTimeout(() => {
+                    petal.classList.add('show');
+                }, 1000 + (i * 80));
+            }
+        }
+        
+        // Initial creation
+        createSunflower();
+        
+        // Reset button
+        resetBtn.addEventListener('click', () => {
+            createSunflower();
+        });
+    </script>
+</body>
+</html>
